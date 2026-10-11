@@ -23,7 +23,9 @@
     film.load();
     start.hidden = false;
     start.disabled = false;
-    start.querySelector("span").textContent = "↻ 重试播放";
+    start.querySelector("span").textContent = "↻";
+    start.setAttribute("aria-label", "视频加载失败，重试播放");
+    start.title = "视频加载失败，请检查网络后重试";
     say("视频加载失败，请检查网络后重试。");
   };
   const play = () => film.play().catch((error) => {
@@ -43,7 +45,9 @@
   }
   start.addEventListener("click", async () => {
     start.disabled = true;
-    start.querySelector("span").textContent = "正在加载…";
+    start.title = "";
+    start.setAttribute("aria-label", "正在加载视频");
+    start.querySelector("span").textContent = "…";
     say("正在读取视频…");
     try {
       await loadLibrary();
@@ -57,7 +61,7 @@
         }
         say("此浏览器不支持视频流播放，请使用新版 Safari、Chrome 或 Edge。");
         start.disabled = false;
-        start.querySelector("span").textContent = "↻ 重试播放";
+        start.querySelector("span").textContent = "↻";
         return;
       }
       film.disableRemotePlayback = true;
