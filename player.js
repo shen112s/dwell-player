@@ -95,7 +95,10 @@
     if (initialized) say("");
   });
   film.addEventListener("seeking", () => {
-    if (hls && !film.paused) { stopLoading(); startLoading(film.currentTime); }
+    if (hls) { stopLoading(); startLoading(film.currentTime); }
+  });
+  film.addEventListener("seeked", () => {
+    if (film.paused) { stopLoading(); say(""); }
   });
   film.addEventListener("ended", stopLoading);
   film.addEventListener("error", fail);
