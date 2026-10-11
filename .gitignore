@@ -1,0 +1,5 @@
+media/
+.media-git/
+.DS_Store
+.preview/
+verification/
