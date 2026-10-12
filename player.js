@@ -68,13 +68,14 @@
       hls = new window.Hls({
         autoStartLoad: false,
         enableWorker: true,
-        preferManagedMediaSource: true,
-        maxBufferLength: 8,
-        maxMaxBufferLength: 12,
-        maxBufferSize: 32 * 1024 * 1024,
-        backBufferLength: 4,
-        frontBufferFlushThreshold: 16,
-        startFragPrefetch: false
+        preferManagedMediaSource: false,
+        maxBufferLength: 16,
+        maxMaxBufferLength: 20,
+        maxBufferSize: 72 * 1024 * 1024,
+        backBufferLength: 0,
+        frontBufferFlushThreshold: 24,
+        startFragPrefetch: false,
+        progressive: true
       });
       hls.on(window.Hls.Events.ERROR, (_event, data) => {
         if (data.fatal) fail();
@@ -95,14 +96,17 @@
   });
   film.addEventListener("play", () => startLoading());
   film.addEventListener("pause", () => {
-    stopLoading();
+    // Keep filling the bounded forward buffer while paused. Aborting here
+    // discards a partially downloaded large segment and slows the next Play.
     if (initialized) say("");
   });
   film.addEventListener("seeking", () => {
-    if (hls) { stopLoading(); startLoading(film.currentTime); }
+    // HLS.js handles cancellation and repositioning when seeking.
+    // Repeated stop/start calls would discard work during timeline scrubbing.
+    if (hls) startLoading(film.currentTime);
   });
   film.addEventListener("seeked", () => {
-    if (film.paused) { stopLoading(); say(""); }
+    if (film.paused) say("");
   });
   film.addEventListener("ended", stopLoading);
   film.addEventListener("error", fail);
