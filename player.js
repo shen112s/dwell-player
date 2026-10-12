@@ -3,7 +3,7 @@
   const film = document.getElementById("film");
   const start = document.getElementById("start");
   const status = document.getElementById("status");
-  const source = "stream.m3u8";
+  const source = "stream.m3u8?v=6a696857e46f";
   let hls = null;
   let initialized = false;
   let loading = false;
